@@ -12,16 +12,9 @@ function Scene(el) {
 
 Scene.prototype.init = function() {
 
-    this.renderer = new THREE.WebGLRenderer();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.el.appendChild(this.renderer.domElement);
-
-    //
-    this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-    this.camera.position.z = 400;
-
-    this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.Fog(0x000000, 1, 1000);
+    this.initRender();
+    this.initCamera();
+    this.initScene();
 
     this.object = new THREE.Object3D();
     this.scene.add(this.object);
@@ -43,20 +36,13 @@ Scene.prototype.init = function() {
 
     }
 
-    this.scene.add(new THREE.AmbientLight(0x222222));
-
-    this.light = new THREE.DirectionalLight(0xffffff);
-    this.light.position.set(1, 1, 1);
-    this.scene.add(this.light);
-
-    // postprocessing
-    this.initPostProcessing();
-
+    this.initLights();
+    this.postProcessing();
 
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
 };
 
-Scene.prototype.initPostProcessing = function() {
+Scene.prototype.postProcessing = function() {
     this.composer = new THREE.EffectComposer(this.renderer);
     this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
 
@@ -68,6 +54,29 @@ Scene.prototype.initPostProcessing = function() {
     effect.uniforms['amount'].value = 0.0015;
     effect.renderToScreen = true;
     this.composer.addPass(effect);
+};
+
+Scene.prototype.initRender = function() {
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.el.appendChild(this.renderer.domElement);
+};
+
+Scene.prototype.initCamera = function() {
+    this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
+    this.camera.position.z = 400;
+};
+
+Scene.prototype.initScene = function() {
+    this.scene = new THREE.Scene();
+    this.scene.fog = new THREE.Fog(0x000000, 1, 1000);
+};
+
+Scene.prototype.initLights = function() {
+    this.scene.add(new THREE.AmbientLight(0x222222));
+    this.light = new THREE.DirectionalLight(0xffffff);
+    this.light.position.set(1, 1, 1);
+    this.scene.add(this.light);
 };
 
 Scene.prototype.onWindowResize = function() {
