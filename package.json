@@ -1,0 +1,56 @@
+{
+  "name": "sound-and-typo",
+  "version": "0.0.0",
+  "description": "A web experiment about sound and typography.",
+  "main": "index.js",
+  "repository": {
+    "type": "git"
+  },
+  "keywords": [],
+  "author": "vdaguenet",
+  "license": "MIT",
+  "browserify": {
+    "transform": [
+      "html-browserify",
+      "browserify-shim"
+    ]
+  },
+  "browser": {
+    "TweenMax": "./node_modules/greensock/src/minified/TweenMax.min.js"
+  },
+  "browserify-shim": {
+    "TweenMax": "TweenMax"
+  },
+  "napa": {
+    "greensock": "greensock/GreenSock-JS"
+  },
+  "devDependencies": {
+    "browserify": "^5.9.1",
+    "browserify-shim": "*",
+    "debounce": "*",
+    "del": "*",
+    "gulp": "*",
+    "gulp-autoprefixer": "0.0.8",
+    "gulp-jshint": "^1.8.2",
+    "gulp-minify-css": "~0.3.8",
+    "gulp-notify": "^1.4.0",
+    "gulp-plumber": "*",
+    "gulp-sass": "*",
+    "gulp-streamify": "0.0.5",
+    "gulp-uglify": "*",
+    "gulp-uglifyjs": "^0.4.4",
+    "gulp-util": "^3.0.0",
+    "html-browserify": "*",
+    "jshint-stylish": "*",
+    "napa": "*",
+    "pretty-hrtime": "*",
+    "remapify": "*",
+    "vinyl-source-stream": "*",
+    "watchify": "*",
+    "yargs": "*"
+  },
+  "dependencies": {},
+  "scripts": {
+    "install": "napa"
+  }
+}
