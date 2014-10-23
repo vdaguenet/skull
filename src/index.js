@@ -1,7 +1,9 @@
-var Scene = require('./lib/Scene.js');
+var SceneManager = require('./lib/SceneManager.js');
+var AsteroidScene = require('./lib/AsteroidScene.js');
 
 (function() {
-    var s = new Scene(document.getElementById('render'));
-    s.init();
-    s.animate();
+    var sm = new SceneManager(document.getElementById('render'));
+    var s = new AsteroidScene();
+    sm.register(s);
+    sm.play(0);
 })();
