@@ -6,12 +6,14 @@ function Audio(file) {
     this.source = this.context.createBufferSource();
     this.analyser = this.context.createAnalyser();
     this.analyser.fftSize = 2048;
+    this.gainNode = this.context.createGain();
     this.buffer = null;
     this.audioBuffer = null;
     this.freqByteData = 0;
     // Connect audio processing graph
     this.source.connect(this.analyser);
-    this.analyser.connect(this.context.destination);
+    this.analyser.connect(this.gainNode);
+    this.gainNode.connect(this.context.destination);
 
     this.initByteBuffer();
 }
@@ -38,14 +40,17 @@ Audio.prototype.load = function(callback) {
     request.send();
 };
 
-Audio.prototype.play = function(time) {
-    this.source.start(time);
+Audio.prototype.play = function(delay, start, fadeInDuration) {
+    // Fade the track in.
+    this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime);
+    this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + fadeInDuration);
+
+    this.source.start(delay, start);
 };
 
 Audio.prototype.initByteBuffer = function() {
     if (!this.freqByteData || this.freqByteData.length != this.analyser.frequencyBinCount) {
-        var freqByteData = new Uint8Array(this.analyser.frequencyBinCount);
-        this.freqByteData = freqByteData;
+        this.freqByteData = new Uint8Array(this.analyser.frequencyBinCount);
     }
 };
 
