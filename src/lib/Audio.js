@@ -23,7 +23,6 @@ Audio.prototype.load = function(callback) {
     request.responseType = "arraybuffer";
 
     request.onload = function() {
-        console.log(this);
         this.context.decodeAudioData(request.response, function(b) {
             this.audioBuffer = b;
             this.source.buffer = this.audioBuffer;
