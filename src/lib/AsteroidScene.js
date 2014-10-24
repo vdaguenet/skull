@@ -9,7 +9,6 @@ var stats,
 
 function AsteroidScene() {
     this.scene = null;
-    this.composer = null;
     this.group = null;
     this.light = null;
 }

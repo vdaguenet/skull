@@ -5,6 +5,7 @@ var SceneManager = require('./lib/SceneManager.js'),
 
 var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(document.getElementById('render'));
+var glitching = false;
 
 var scenes = [
     new AsteroidScene()
@@ -24,10 +25,18 @@ function analyze() {
     requestAnimationFrame(analyze);
     var stream = audioAnalyzer.getFrequencyAnalysis();
     var a = utils.average(stream);
-    if (a > 101.5 && a < 102.5) {
-        console.log("GLITCH");
-        console.log(a);
+    if (a > 101.5 && a < 102.5 && glitching === false) {
+        glitching = true;
+        SM.getCurrentScene().glitch();
+        resetGlitch();
     }
+}
+
+function resetGlitch() {
+    setTimeout(function() {
+        console.log('RESET');
+        glitching = false;
+    }, 2000);
 }
 
 function registerScenes() {

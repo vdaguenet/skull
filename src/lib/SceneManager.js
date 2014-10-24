@@ -43,4 +43,8 @@ SceneManager.prototype.switch = function(id) {
     this.play(id);
 };
 
+SceneManager.prototype.getCurrentScene = function() {
+    return this.scenes[this.scenePlaying];
+};
+
 module.exports = SceneManager;

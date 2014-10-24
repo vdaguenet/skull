@@ -4,6 +4,7 @@ function AbstractScene() {
     this.camera = null;
     this.renderer = null;
     this.raf = null;
+    this.composer = null;
 }
 
 AbstractScene.prototype.initRender = function() {
@@ -24,6 +25,13 @@ AbstractScene.prototype.onWindowResize = function() {
 
 AbstractScene.prototype.animate = function() {
     console.warn('Animate method must be override');
+};
+
+AbstractScene.prototype.glitch = function() {
+    console.log("GLITCH");
+    var glitchPass = new THREE.GlitchPass();
+    glitchPass.renderToScreen = true;
+    this.composer.addPass(glitchPass);
 };
 
 AbstractScene.prototype.play = function() {
