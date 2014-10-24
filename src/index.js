@@ -1,6 +1,7 @@
 var SceneManager = require('./lib/SceneManager.js'),
     AsteroidScene = require('./lib/AsteroidScene.js'),
-    Audio = require('./lib//Audio.js');
+    Audio = require('./lib//Audio.js'),
+    utils = require('./utils/utils.js');
 
 var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(document.getElementById('render'));
@@ -13,7 +14,7 @@ var scenes = [
     registerScenes();
 
     audioAnalyzer.load(function() {
-        audioAnalyzer.play();
+        audioAnalyzer.play(0, 32, 3);
         requestAnimationFrame(analyze);
         SM.play(0);
     });
@@ -22,8 +23,11 @@ var scenes = [
 function analyze() {
     requestAnimationFrame(analyze);
     var stream = audioAnalyzer.getFrequencyAnalysis();
-    // console.log(SM);
-    // console.log(stream);
+    var a = utils.average(stream);
+    if (a > 101.5 && a < 102.5) {
+        console.log("GLITCH");
+        console.log(a);
+    }
 }
 
 function registerScenes() {
