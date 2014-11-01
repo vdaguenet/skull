@@ -15,7 +15,10 @@ var scenes = [
     registerScenes();
 
     audioAnalyzer.load(function() {
-        audioAnalyzer.play(0, 32, 3);
+        audioAnalyzer.play(0, 32, 60, {
+            fadeInDuration: 3,
+            fadeOutDuration: 2
+        });
         requestAnimationFrame(analyze);
         SM.play(0);
     });

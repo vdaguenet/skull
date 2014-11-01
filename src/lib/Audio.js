@@ -40,12 +40,23 @@ Audio.prototype.load = function(callback) {
     request.send();
 };
 
-Audio.prototype.play = function(delay, start, fadeInDuration) {
-    // Fade the track in.
-    this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime);
-    this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + fadeInDuration);
+Audio.prototype.play = function(delay, start, duration, params) {
+    duration = duration || this.source.duration;
+    var fadeInDuration = params.fadeInDuration || null;
+    var fadeOutDuration = params.fadeOutDuration || null;
 
-    this.source.start(delay, start);
+    if (fadeInDuration) {
+        // Fade the track in.
+        this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime);
+        this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + fadeInDuration);
+    }
+    if (fadeOutDuration) {
+        // Fade the track out.
+        this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + duration - fadeOutDuration);
+        this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime + duration);
+    }
+
+    this.source.start(delay, start, duration);
 };
 
 Audio.prototype.initByteBuffer = function() {
