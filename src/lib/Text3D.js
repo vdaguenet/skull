@@ -1,23 +1,24 @@
 'use strict';
 
-function Text3D(text, font, color) {
+function Text3D(text, font, color, params) {
+    params = params || {};
     // Font
     this.text = text;
     this.font = font;
-    this.weight = 'normal';
-    this.style = 'normal';
-    this.size = 60;
+    this.weight = params.weight || 'normal';
+    this.style = params.style || 'normal';
+    this.size = params.size || 60;
     // Geometry
-    this.height = 1;
-    this.curveSegments = 1;
-    this.bevelEnabled = true;
-    this.bevelThickness = 20;
-    this.bevelSize = 4;
+    this.height = params.height || 1;
+    this.curveSegments = params.curveSegments || 1;
+    this.bevelEnabled = (params.bevelEnabled !== undefined) ? params.bevelEnabled : true;
+    this.bevelThickness = params.bevelThickness || 20;
+    this.bevelSize = params.bevelThickness || 4;
     this.setGeometry();
     // Material
-    this.color = color;
-    this.shading = THREE.SmoothShading;
-    this.wireframe = false;
+    this.color = params.color || color;
+    this.shading = params.shading || THREE.SmoothShading;
+    this.wireframe = (params.wireframe !== undefined) ? params.wireframe : false;
     this.setMaterial();
 }
 
