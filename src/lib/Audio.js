@@ -41,16 +41,18 @@ Audio.prototype.load = function(callback) {
 };
 
 Audio.prototype.play = function(delay, start, duration, params) {
-    duration = duration || this.source.duration;
+    this.duration = duration = duration || this.source.duration;
     var fadeInDuration = params.fadeInDuration || null;
     var fadeOutDuration = params.fadeOutDuration || null;
 
     if (fadeInDuration) {
+        this.duration += fadeInDuration;
         // Fade the track in.
         this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime);
         this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + fadeInDuration);
     }
     if (fadeOutDuration) {
+        this.duration += fadeOutDuration;
         // Fade the track out.
         this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + duration - fadeOutDuration);
         this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime + duration);
@@ -68,7 +70,11 @@ Audio.prototype.initByteBuffer = function() {
 Audio.prototype.getFrequencyAnalysis = function() {
     this.analyser.smoothingTimeConstant = 0.75;
     this.analyser.getByteFrequencyData(this.freqByteData);
-
+    console.log(this.context.currentTime, this.duration);
+    if(this.context.currentTime >= this.duration) {
+        this.source.stop();
+        return false;
+    }
     return this.freqByteData;
 };
 

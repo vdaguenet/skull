@@ -1,32 +1,41 @@
 var SceneManager = require('./lib/SceneManager.js'),
     AsteroidScene = require('./lib/AsteroidScene.js'),
-    Audio = require('./lib//Audio.js'),
+    SpiralScene = require('./lib/SpiralScene.js'),
+    Audio = require('./lib/Audio.js'),
     utils = require('./utils/utils.js');
 
 var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(document.getElementById('render'));
 var glitching = false;
+var raf;
 
 var scenes = [
-    new AsteroidScene()
+    new AsteroidScene(),
+    new SpiralScene(),
 ];
 
 (function() {
     registerScenes();
 
     audioAnalyzer.load(function() {
-        audioAnalyzer.play(0, 32, 60, {
+        audioAnalyzer.play(0, 32, 45, {
             fadeInDuration: 3,
             fadeOutDuration: 2
         });
-        requestAnimationFrame(analyze);
-        SM.play(0);
+        raf = requestAnimationFrame(analyze);
+        SM.play(1);
     });
 })();
 
 function analyze() {
-    requestAnimationFrame(analyze);
+    raf = requestAnimationFrame(analyze);
     var stream = audioAnalyzer.getFrequencyAnalysis();
+
+    if(false === stream) {
+        onEnd();
+        return;
+    }
+
     var a = utils.average(stream);
     if (a > 101.5 && a < 102.5 && glitching === false) {
         glitching = true;
@@ -37,13 +46,17 @@ function analyze() {
 
 function resetGlitch() {
     setTimeout(function() {
-        console.log('RESET');
         glitching = false;
-    }, 2000);
+    }, 1700);
 }
 
 function registerScenes() {
     for (var i = 0, j = scenes.length; i < j; i++) {
         SM.register(scenes[i]);
     }
+}
+
+function onEnd() {
+    console.log("ON END");
+    cancelAnimationFrame(raf);
 }
