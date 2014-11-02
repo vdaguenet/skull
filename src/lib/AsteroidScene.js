@@ -11,6 +11,7 @@ function AsteroidScene() {
     this.scene = null;
     this.group = null;
     this.light = null;
+    this.canGlitch = true;
 }
 
 utils.inherit(AsteroidScene, AbstractScene);
