@@ -1,6 +1,6 @@
 var SceneManager = require('./lib/SceneManager.js'),
     AsteroidScene = require('./lib/AsteroidScene.js'),
-    SpiralScene = require('./lib/SpiralScene.js'),
+    RingScene = require('./lib/RingScene.js'),
     Audio = require('./lib/Audio.js'),
     utils = require('./utils/utils.js');
 
@@ -11,7 +11,7 @@ var raf;
 
 var scenes = [
     new AsteroidScene(),
-    new SpiralScene(),
+    new RingScene(),
 ];
 
 (function() {
