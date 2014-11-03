@@ -9,6 +9,7 @@ var EventEmitter = require('wolfy87-eventemitter'),
 var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(document.getElementById('render'));
 var glitching = false;
+var switching = false;
 var raf;
 var scenes = [
     new AsteroidScene(),
@@ -24,6 +25,24 @@ var scenes = [
     });
 })();
 
+function registerScenes() {
+    var j = scenes.length;
+    var scenesRegistered  = 0;
+
+    SM.EE.addListener('scene:register', function() {
+        scenesRegistered++;
+        console.log('%cRegister scene '+ scenesRegistered, 'color: #0000ff');
+        if(scenesRegistered == j) {
+            console.log('%cAll scenes registered!', 'color: #0000ff');
+            loadSound();
+        }
+    });
+
+    for (var i = 0; i < j; i++) {
+        SM.register(scenes[i]);
+    }
+}
+
 function loadSound () {
     audioAnalyzer.load(function() {
         ee.emitEvent('sound:load');
@@ -36,7 +55,8 @@ function playSound () {
         fadeOutDuration: 2
     });
     raf = requestAnimationFrame(analyze);
-    SM.play(1);
+    var id = Math.floor(utils.random(0, scenes.length));
+    SM.play(id);
     SM.render();
 }
 
@@ -58,12 +78,14 @@ function analyze() {
         SM.play(id);
         resetGlitch();
     }
-    if(a > 80.6 && a < 80.8) {
+
+    if(a > 72.7 && a < 73.5 && false === switching) {
         console.log("SWITCH", a);
         id = Math.floor(utils.random(0, scenes.length));
         SM.play(id);
+        switching = true;
+        resetSwitch();
     }
-
 }
 
 function resetGlitch() {
@@ -72,22 +94,10 @@ function resetGlitch() {
     }, 1700);
 }
 
-function registerScenes() {
-    var j = scenes.length;
-    var scenesRegistered  = 0;
-
-    SM.EE.addListener('scene:register', function() {
-        scenesRegistered++;
-        console.log('%cRegister scene '+ scenesRegistered, 'color: #0000ff');
-        if(scenesRegistered == j) {
-            console.log('%cAll scenes registered!', 'color: #0000ff');
-            loadSound();
-        }
-    });
-
-    for (var i = 0; i < j; i++) {
-        SM.register(scenes[i]);
-    }
+function resetSwitch() {
+    setTimeout(function() {
+        switching = false;
+    }, 200);
 }
 
 function onEnd() {
