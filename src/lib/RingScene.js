@@ -1,11 +1,9 @@
 'use strict';
 
-var Text3D = require('./Text3D.js'),
+var EventEmitter = require('wolfy87-eventemitter'),
+    Text3D = require('./Text3D.js'),
     AbstractScene = require('./AbstractScene.js'),
     utils = require('../utils/utils.js');
-
-var stats,
-    debug = true;
 
 function RingScene() {
     this.scene = null;
@@ -19,13 +17,13 @@ function RingScene() {
     };
     this.radius = 60;
     this.nbRings = 20;
+    this.EE = new EventEmitter();
 }
 
 utils.inherit(RingScene, AbstractScene);
 
-RingScene.prototype.init = function() {
-
-    this.initRender();
+RingScene.prototype.init = function(renderer) {
+    this.renderer = renderer;
     this.initCamera();
     this.initScene();
 
@@ -77,8 +75,6 @@ RingScene.prototype.init = function() {
                     material = text.getMaterial();
 
                     mesh = new THREE.Mesh(geometry, material);
-                    // Increase y position to have a spiral
-                    // mesh.position.set(positions[i].x, positions[i].y+(nbRun-1.5*i*ratio), positions[i].z);
                     mesh.position.set(positions[i].x, positions[i].y, positions[i].z);
                     this.group.add(mesh);
                     nbLetter++;
@@ -97,17 +93,7 @@ RingScene.prototype.init = function() {
     this.initLights();
     this.postProcessing();
 
-    if (true === debug) {
-        stats = new Stats();
-        stats.setMode(0); // 0: fps, 1: ms
-
-        // Align top-left
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.left = '0px';
-        stats.domElement.style.top = '0px';
-
-        document.body.appendChild(stats.domElement);
-    }
+    this.EE.emit('scene:init');
 };
 
 RingScene.prototype.postProcessing = function() {
@@ -148,20 +134,7 @@ RingScene.prototype.initLights = function() {
 };
 
 RingScene.prototype.animate = function() {
-    this.raf = requestAnimationFrame(this.animate.bind(this));
-
-    // this.group.rotation.x += 0.005;
     this.group.rotation.y -= 0.001;
-
-    if(this.composer) {
-        this.composer.render();
-    } else {
-        this.renderer.render(this.scene, this.camera);
-    }
-
-    if (true === debug) {
-        stats.update();
-    }
 };
 
 module.exports = RingScene;

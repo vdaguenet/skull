@@ -1,4 +1,6 @@
-var SceneManager = require('./lib/SceneManager.js'),
+var EventEmitter = require('wolfy87-eventemitter'),
+    ee = new EventEmitter(),
+    SceneManager = require('./lib/SceneManager.js'),
     AsteroidScene = require('./lib/AsteroidScene.js'),
     RingScene = require('./lib/RingScene.js'),
     Audio = require('./lib/Audio.js'),
@@ -8,7 +10,6 @@ var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(document.getElementById('render'));
 var glitching = false;
 var raf;
-
 var scenes = [
     new AsteroidScene(),
     new RingScene(),
@@ -17,15 +18,27 @@ var scenes = [
 (function() {
     registerScenes();
 
-    audioAnalyzer.load(function() {
-        audioAnalyzer.play(0, 32, 45, {
-            fadeInDuration: 3,
-            fadeOutDuration: 2
-        });
-        raf = requestAnimationFrame(analyze);
-        SM.play(1);
+    ee.addOnceListener('sound:load', function() {
+        console.log('%cSound loaded!', 'color: #0000ff');
+        playSound();
     });
 })();
+
+function loadSound () {
+    audioAnalyzer.load(function() {
+        ee.emitEvent('sound:load');
+    });
+}
+
+function playSound () {
+    audioAnalyzer.play(0, 32, 45, {
+        fadeInDuration: 3,
+        fadeOutDuration: 2
+    });
+    raf = requestAnimationFrame(analyze);
+    SM.play(1);
+    SM.render();
+}
 
 function analyze() {
     raf = requestAnimationFrame(analyze);
@@ -36,12 +49,21 @@ function analyze() {
         return;
     }
 
-    var a = utils.average(stream);
+    var a = utils.average(stream),
+        id;
     if (a > 101.5 && a < 102.5 && glitching === false) {
         glitching = true;
-        SM.getCurrentScene().glitch();
+        SM.glitch();
+        id = Math.floor(utils.random(0, scenes.length));
+        SM.play(id);
         resetGlitch();
     }
+    if(a > 80.6 && a < 80.8) {
+        console.log("SWITCH", a);
+        id = Math.floor(utils.random(0, scenes.length));
+        SM.play(id);
+    }
+
 }
 
 function resetGlitch() {
@@ -51,7 +73,19 @@ function resetGlitch() {
 }
 
 function registerScenes() {
-    for (var i = 0, j = scenes.length; i < j; i++) {
+    var j = scenes.length;
+    var scenesRegistered  = 0;
+
+    SM.EE.addListener('scene:register', function() {
+        scenesRegistered++;
+        console.log('%cRegister scene '+ scenesRegistered, 'color: #0000ff');
+        if(scenesRegistered == j) {
+            console.log('%cAll scenes registered!', 'color: #0000ff');
+            loadSound();
+        }
+    });
+
+    for (var i = 0; i < j; i++) {
         SM.register(scenes[i]);
     }
 }
@@ -59,4 +93,5 @@ function registerScenes() {
 function onEnd() {
     console.log("ON END");
     cancelAnimationFrame(raf);
+    SM.stop();
 }

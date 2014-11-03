@@ -1,50 +1,89 @@
 'use strict';
 
-var utils = require('../utils/utils.js');
+var EventEmitter = require('wolfy87-eventemitter'),
+    utils = require('../utils/utils.js');
+
+var stats,
+    debug = true;
 
 function SceneManager(el) {
     this.el = el;
+    this.EE = new EventEmitter();
     this.scenes = [];
     this.scenePlaying = null;
-
+    this.renderer = null;
+    this.initRender();
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
+
+    if (true === debug) {
+        stats = new Stats();
+        stats.setMode(0); // 0: fps, 1: ms
+
+        // Align top-left
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.top = '0px';
+
+        document.body.appendChild(stats.domElement);
+    }
 }
 
-SceneManager.prototype.register = function(scene) {
-    scene.init();
-    this.scenes.push(scene);
-    this.appendRenderers();
+SceneManager.prototype.initRender = function() {
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.el.appendChild(this.renderer.domElement);
+    this.EE.emit('render:init');
 };
 
-SceneManager.prototype.appendRenderers = function() {
-    utils.removeChildNodes(this.el);
-    for (var i = 0, j = this.scenes.length; i < j; i++) {
-        this.el.appendChild(this.scenes[i].getRendererElement());
+SceneManager.prototype.render = function() {
+    this.raf = requestAnimationFrame(this.render.bind(this));
+
+    this.scenes[this.scenePlaying].animate();
+
+    if(this.scenes[this.scenePlaying].composer) {
+        this.scenes[this.scenePlaying].composer.render();
+    } else {
+        this.renderer.render(
+            this.scenes[this.scenePlaying].scene,
+            this.scenes[this.scenePlaying].camera
+        );
     }
+
+    if (true === debug) {
+        stats.update();
+    }
+};
+
+SceneManager.prototype.register = function(scene) {
+    scene.EE.addOnceListener('scene:init', function() {
+        this.scenes.push(scene);
+        this.EE.emitEvent('scene:register');
+    }.bind(this));
+
+    scene.init(this.renderer);
+};
+
+SceneManager.prototype.glitch = function() {
+    this.scenes[this.scenePlaying].glitch();
 };
 
 SceneManager.prototype.onWindowResize = function(first_argument) {
     for (var i = 0, j = this.scenes.length; i < j; i++) {
         this.scenes[i].onWindowResize();
     }
+
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
 };
 
 SceneManager.prototype.play = function(id) {
-    this.scenes[id].play();
-    this.scenes[id].getRendererElement().style.opacity = 1;
+    console.log('play scene', id);
+    if(id < 0 || id > this.scenes.length || id == this.scenePlaying) return;
+
     this.scenePlaying = id;
 };
 
-SceneManager.prototype.switch = function(id) {
-    if (this.scenePlaying) {
-        this.scenes[this.scenePlaying].stop();
-        this.scenes[this.scenePlaying].getRendererElement().style.opacity = 0;
-    }
-    this.play(id);
-};
-
-SceneManager.prototype.getCurrentScene = function() {
-    return this.scenes[this.scenePlaying];
+SceneManager.prototype.stop = function() {
+    cancelAnimationFrame(this.raf);
 };
 
 module.exports = SceneManager;

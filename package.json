@@ -49,7 +49,9 @@
     "watchify": "*",
     "yargs": "*"
   },
-  "dependencies": {},
+  "dependencies": {
+    "wolfy87-eventemitter": "^4.2.9"
+  },
   "scripts": {
     "install": "napa"
   }

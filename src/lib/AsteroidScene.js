@@ -1,24 +1,22 @@
 'use strict';
 
-var Text3D = require('./Text3D.js'),
+var EventEmitter = require('wolfy87-eventemitter'),
+    Text3D = require('./Text3D.js'),
     AbstractScene = require('./AbstractScene.js'),
     utils = require('../utils/utils.js');
-
-var stats,
-    debug = true;
 
 function AsteroidScene() {
     this.scene = null;
     this.group = null;
     this.light = null;
     this.canGlitch = true;
+    this.EE = new EventEmitter();
 }
 
 utils.inherit(AsteroidScene, AbstractScene);
 
-AsteroidScene.prototype.init = function() {
-
-    this.initRender();
+AsteroidScene.prototype.init = function(renderer) {
+    this.renderer = renderer;
     this.initCamera();
     this.initScene();
 
@@ -56,17 +54,7 @@ AsteroidScene.prototype.init = function() {
     this.initLights();
     this.postProcessing();
 
-    if (true === debug) {
-        stats = new Stats();
-        stats.setMode(0); // 0: fps, 1: ms
-
-        // Align top-left
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.left = '0px';
-        stats.domElement.style.top = '0px';
-
-        document.body.appendChild(stats.domElement);
-    }
+    this.EE.emitEvent('scene:init');
 };
 
 AsteroidScene.prototype.postProcessing = function() {
@@ -101,16 +89,8 @@ AsteroidScene.prototype.initLights = function() {
 };
 
 AsteroidScene.prototype.animate = function() {
-    this.raf = requestAnimationFrame(this.animate.bind(this));
-
     this.group.rotation.x += 0.005;
     this.group.rotation.y += 0.01;
-
-    this.composer.render();
-
-    if (true === debug) {
-        stats.update();
-    }
 };
 
 module.exports = AsteroidScene;

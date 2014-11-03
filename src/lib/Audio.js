@@ -70,7 +70,6 @@ Audio.prototype.initByteBuffer = function() {
 Audio.prototype.getFrequencyAnalysis = function() {
     this.analyser.smoothingTimeConstant = 0.75;
     this.analyser.getByteFrequencyData(this.freqByteData);
-    console.log(this.context.currentTime, this.duration);
     if(this.context.currentTime >= this.duration) {
         this.source.stop();
         return false;
