@@ -9,7 +9,6 @@ function RingScene() {
     this.scene = null;
     this.group = null;
     this.light = null;
-    this.canGlitch = true;
     // Center of the spiarl
     this.center = {
         x: 7,

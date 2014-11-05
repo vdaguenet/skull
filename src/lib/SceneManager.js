@@ -59,12 +59,7 @@ SceneManager.prototype.register = function(scene) {
         this.scenes.push(scene);
         this.EE.emitEvent('scene:register');
     }.bind(this));
-
     scene.init(this.renderer);
-};
-
-SceneManager.prototype.glitch = function() {
-    this.scenes[this.scenePlaying].glitch();
 };
 
 SceneManager.prototype.onWindowResize = function(first_argument) {

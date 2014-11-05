@@ -15,15 +15,4 @@ AbstractScene.prototype.onWindowResize = function() {
 
 AbstractScene.prototype.animate = function() {};
 
-AbstractScene.prototype.glitch = function() {
-    if(!this.canGlitch) return;
-
-    if(!this.composer) {
-        this.composer = new THREE.EffectComposer(this.renderer);
-    }
-    var glitchPass = new THREE.GlitchPass();
-    glitchPass.renderToScreen = true;
-    this.composer.addPass(glitchPass);
-};
-
 module.exports = AbstractScene;

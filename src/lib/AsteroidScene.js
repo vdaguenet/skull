@@ -9,7 +9,6 @@ function AsteroidScene() {
     this.scene = null;
     this.group = null;
     this.light = null;
-    this.canGlitch = true;
     this.EE = new EventEmitter();
 }
 
