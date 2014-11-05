@@ -16,7 +16,7 @@ function Text3D(text, font, color, params) {
     this.bevelSize = params.bevelThickness || 4;
     this.setGeometry();
     // Material
-    this.color = params.color || color;
+    this.color = color;
     this.shading = params.shading || THREE.SmoothShading;
     this.wireframe = (params.wireframe !== undefined) ? params.wireframe : false;
     this.setMaterial();
