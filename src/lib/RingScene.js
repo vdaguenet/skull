@@ -36,7 +36,7 @@ RingScene.prototype.init = function(renderer) {
     var positions = [];
 
     var letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','P','Q','R','S','T','U','V','W','X','Y','Z'];
-    var fonts = ['arial narrow', 'droid sans', 'gentilis', 'helvetiker', 'jaycons', 'mf rusty', 'optimer', 'stixgeneral'];
+    var fonts = ['arial narrow', 'berthold akzidenz grotesk be', 'droid sans', 'gentilis', 'helvetiker', 'jaycons', 'mf rusty', 'optimer', 'stixgeneral'];
 
     var text, geometry, material, mesh,
         letter, font,
@@ -69,6 +69,7 @@ RingScene.prototype.init = function(renderer) {
                     font = fonts[Math.floor(utils.random(0, fonts.length))];
                     text = new Text3D(letter, font, 0xff1100, {
                         size: 4,
+                        curveSegments: 2,
                         bevelEnabled: false
                     });
                     geometry = text.getGeometry();
