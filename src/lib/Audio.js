@@ -28,7 +28,7 @@ Audio.prototype.load = function(callback) {
         this.context.decodeAudioData(request.response, function(b) {
             this.audioBuffer = b;
             this.source.buffer = this.audioBuffer;
-            if (callback) {
+            if (callback && typeof(callback) === 'function') {
                 callback();
             }
         }.bind(this), function(buffer) {
