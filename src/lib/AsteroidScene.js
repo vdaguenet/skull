@@ -22,32 +22,42 @@ AsteroidScene.prototype.init = function(renderer) {
     this.group = new THREE.Object3D();
     this.scene.add(this.group);
 
-    var text = new Text3D('TOTO', 'stixgeneral', 0xffffff);
+    var text = new Text3D('sound', 'mf rusty', 0xffffff, {
+        weight: 'normal',
+        style: 'normal',
+        size: 60,
+        // Geometry
+        height: 8,
+        curveSegments: 2,
+        bevelEnabled: true,
+        bevelThickness: 3,
+        bevelSize: 8,
+        // Material
+        shading: THREE.SmoothShading,
+        wireframe: false
+    });
     var geometry = text.getGeometry();
     var material = text.getMaterial();
 
     var mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(Math.random() - 0.7, Math.random() - 0.7, Math.random() - 0.7).normalize();
-    mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+    mesh.position.set(-185, -10, -50);
+    mesh.rotation.y = 100;
     mesh.scale.x = mesh.scale.y = mesh.scale.z = 2;
     this.group.add(mesh);
 
     // Change geometry and material for spheres
     geometry = new THREE.SphereGeometry(1, 4, 4);
     material = new THREE.MeshPhongMaterial({
-        color: 0xff0000,
+        color: Math.random() * 0xffffff,
         shading: THREE.FlatShading
     });
 
     for (var i = 0; i < 60; i++) {
-
         mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(utils.random(0, 1) - 0.5, utils.random(0, 1) - 0.5, utils.random(0, 1) - 0.5).normalize();
-        mesh.position.multiplyScalar(Math.random() * 400);
+        mesh.position.set(utils.random(-400, 400), utils.random(-400, 400), utils.random(-400, 400));
         mesh.rotation.set(utils.random(0, 2), utils.random(0, 2), utils.random(0, 2));
         mesh.scale.x = mesh.scale.y = mesh.scale.z = utils.random(0, 50);
         this.group.add(mesh);
-
     }
 
     this.initLights();
@@ -88,8 +98,8 @@ AsteroidScene.prototype.initLights = function() {
 };
 
 AsteroidScene.prototype.animate = function() {
-    this.group.rotation.x += 0.005;
-    this.group.rotation.y += 0.01;
+    this.group.rotation.x -= 0.0015;
+    this.group.rotation.y += 0.003;
 };
 
 module.exports = AsteroidScene;
