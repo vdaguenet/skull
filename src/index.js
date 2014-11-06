@@ -16,10 +16,10 @@ var loader = document.querySelector('.loader');
 var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(render);
 var scenes = [
-    new GlitchScene(),
+    new SkullScene(),
+    // new GlitchScene(),
     new RingScene(),
     new AsteroidScene(),
-    new SkullScene(),
 ];
 
 var lastGlitch = 0;

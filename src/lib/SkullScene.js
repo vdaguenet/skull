@@ -57,6 +57,7 @@ SkullScene.prototype.postProcessing = function() {
     this.composer.addPass(filmPass);
 
     var glitchPass = new THREE.GlitchPass();
+    glitchPass.goWild = true;
     this.composer.addPass(glitchPass);
 
     var vignettePass = new THREE.ShaderPass(THREE.VignetteShader);
