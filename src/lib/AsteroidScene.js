@@ -100,6 +100,12 @@ AsteroidScene.prototype.initLights = function() {
 AsteroidScene.prototype.animate = function() {
     this.group.rotation.x -= 0.0015;
     this.group.rotation.y += 0.003;
+
+    if(this.group.rotation.y > 1) {
+        // reset animation
+        this.group.rotation.x = 0;
+        this.group.rotation.y = 0;
+    }
 };
 
 module.exports = AsteroidScene;
