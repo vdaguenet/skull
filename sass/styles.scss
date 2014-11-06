@@ -5,7 +5,7 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background: url('../assets/image/dark_stripes.png');
+    background: #000;
 }
 
 .loading {
@@ -18,7 +18,7 @@ body {
         left: 0;
         height: 100%;
         width: 25%;
-        background: url('../assets/image/dark_stripes.png');
+        background: #000;
         z-index: 5;
     }
 
