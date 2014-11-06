@@ -5,6 +5,7 @@ var EventEmitter = require('wolfy87-eventemitter'),
     AsteroidScene = require('./lib/AsteroidScene.js'),
     GlitchScene = require('./lib/GlitchScene.js'),
     RingScene = require('./lib/RingScene.js'),
+    SkullScene = require('./lib/SkullScene.js'),
     Audio = require('./lib/Audio.js'),
     utils = require('./utils/utils.js');
 
@@ -15,13 +16,10 @@ var loader = document.querySelector('.loader');
 var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(render);
 var scenes = [
-    GlitchScene,
-    RingScene,
-    AsteroidScene,
-    AsteroidScene,
-    AsteroidScene,
-    AsteroidScene,
-    AsteroidScene,
+    new GlitchScene(),
+    new RingScene(),
+    new AsteroidScene(),
+    new SkullScene(),
 ];
 
 var lastGlitch = 0;
@@ -59,7 +57,7 @@ function registerScenes() {
     });
 
     for (var i = 0; i < j; i++) {
-        SM.register(new scenes[i]());
+        SM.register(scenes[i]);
     }
 }
 
@@ -92,6 +90,7 @@ function analyze() {
         id;
     if (a > 101.5 && a < 102.5) {
         if(Date.now() - lastGlitch < 1700) {
+            // Don't replay glitch before 1.7s
             return;
         }
         // Play glitch scene
@@ -109,6 +108,7 @@ function analyze() {
 
     if(a > 72.5 && a < 73.5) {
         if(Date.now() - lastSwitch < 1000) {
+            // Don't change scene before 1s
             return;
         }
 
