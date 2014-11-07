@@ -45,26 +45,13 @@ SkullScene.prototype.postProcessing = function() {
     rgbPass.uniforms['amount'].value = 0.003;
     this.composer.addPass(rgbPass);
 
-    var effectHBlur = new THREE.ShaderPass( THREE.HorizontalBlurShader );
-    effectHBlur.uniforms[ 'h' ].value = 0.4 / window.innerWidth;
-    this.composer.addPass(effectHBlur);
-
-    var effectVBlur = new THREE.ShaderPass( THREE.VerticalBlurShader );
-    effectVBlur.uniforms[ 'v' ].value = 0.4 / window.innerHeight;
-    this.composer.addPass(effectVBlur);
-
     var filmPass = new THREE.FilmPass(0.5, 0.35, 648, false);
     this.composer.addPass(filmPass);
 
     var glitchPass = new THREE.GlitchPass();
     glitchPass.goWild = true;
+    glitchPass.renderToScreen = true;
     this.composer.addPass(glitchPass);
-
-    var vignettePass = new THREE.ShaderPass(THREE.VignetteShader);
-    vignettePass.uniforms[ "darkness" ].value = 1.6;
-    vignettePass.renderToScreen = true;
-    this.composer.addPass(vignettePass);
-
 };
 
 SkullScene.prototype.initCamera = function() {
