@@ -59,6 +59,3 @@ Text3D.prototype.getMaterial = function() {
 
 
 module.exports = Text3D;
-
-// Intersting
-// DepthMaterial + wireframe
