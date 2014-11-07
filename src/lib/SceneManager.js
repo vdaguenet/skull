@@ -29,7 +29,9 @@ function SceneManager(el) {
 }
 
 SceneManager.prototype.initRender = function() {
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.el.appendChild(this.renderer.domElement);
     this.EE.emit('render:init');
@@ -71,9 +73,10 @@ SceneManager.prototype.onWindowResize = function(first_argument) {
 };
 
 SceneManager.prototype.play = function(id) {
-    console.log('play scene', id);
-    if(id < 0 || id > this.scenes.length || id == this.scenePlaying) return;
+    var j = this.scenes.length;
+    if(id < 0 || id > j || id == j) return;
 
+    console.log('play scene', id);
     this.scenePlaying = id;
 };
 

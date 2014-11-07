@@ -3,7 +3,7 @@ var EventEmitter = require('wolfy87-eventemitter'),
     TweenMax = require('TweenMax'),
     SceneManager = require('./lib/SceneManager.js'),
     AsteroidScene = require('./lib/AsteroidScene.js'),
-    GlitchScene = require('./lib/GlitchScene.js'),
+    FatWordScene = require('./lib/FatWordScene.js'),
     RingScene = require('./lib/RingScene.js'),
     SkullScene = require('./lib/SkullScene.js'),
     Audio = require('./lib/Audio.js'),
@@ -17,9 +17,9 @@ var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(render);
 var scenes = [
     new SkullScene(),
-    // new GlitchScene(),
     new RingScene(),
     new AsteroidScene(),
+    new FatWordScene(),
 ];
 
 var lastGlitch = 0;
@@ -88,27 +88,20 @@ function analyze() {
 
     var a = utils.average(stream),
         id;
-    if (a > 101.5 && a < 102.5) {
-        if(Date.now() - lastGlitch < 1700) {
-            // Don't replay glitch before 1.7s
+    if (a > 100.5 && a < 102.5) {
+        if(Date.now() - lastGlitch < 700) {
+            // Don't replay glitch before 0.7s
             return;
         }
         // Play glitch scene
         SM.play(0);
         lastGlitch = Date.now();
 
-        // Get another scene after 600ms
-        // cause too much glitch is too mutch
-        var timeGlitch = setTimeout(function() {
-            playRandomScene();
-        }, 600);
-
         return;
     }
-
-    if(a > 72.5 && a < 73.5) {
-        if(Date.now() - lastSwitch < 1000) {
-            // Don't change scene before 1s
+    if(a > 78 && a < 88) {
+        if(Date.now() - lastSwitch < 600) {
+            // Don't change scene before 0.6s
             return;
         }
 
