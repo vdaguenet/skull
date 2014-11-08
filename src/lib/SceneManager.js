@@ -81,6 +81,7 @@ SceneManager.prototype.play = function(id) {
 };
 
 SceneManager.prototype.stop = function() {
+    stats.domElement.style.opacity = 0;
     cancelAnimationFrame(this.raf);
 };
 

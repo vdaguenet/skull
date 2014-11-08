@@ -12,6 +12,7 @@ var EventEmitter = require('wolfy87-eventemitter'),
 var render = document.getElementById('render');
 var loading = document.querySelector('.loading');
 var loader = document.querySelector('.loader');
+var endPage = document.querySelector('.end');
 
 var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(render);
@@ -29,6 +30,7 @@ var raf;
 
 (function() {
     TweenMax.set(render, {autoAlpha: 0, display: 'none'});
+    TweenMax.set(endPage, {autoAlpha: 0, display: 'none'});
 
     registerScenes();
 
@@ -111,9 +113,15 @@ function analyze() {
 }
 
 function onEnd() {
-    console.log("ON END");
     cancelAnimationFrame(raf);
     SM.stop();
+
+    var h1 = document.querySelector('.end h1');
+    var sub = document.querySelector('.sub-title');
+    var tl = new TimelineMax();
+    tl.fromTo(render, 0.6, {autoAlpha: 1, display: 'block'}, {autoAlpha: 0, display: 'none', ease: Expo.easeInOut}, 0);
+    tl.fromTo(endPage, 0.6, {autoAlpha: 0, display: 'none'}, {autoAlpha: 1, display: 'block', ease: Expo.easeInOut}, 0);
+    tl.staggerFromTo([h1, sub], 0.7, {alpha: 0, y: 100}, {alpha: 1, y: 0, ease: Expo.easeOut}, 0.08);
 }
 
 function playRandomScene() {
@@ -124,10 +132,11 @@ function playRandomScene() {
 function updateLoader (percent, callback) {
     var loaderBg = document.querySelector('.loader-bg');
     TweenMax.to(loader, 0.3, {x: percent/100*loaderBg.offsetWidth});
+
     if(percent == 100) {
         var tl = new TimelineMax();
-        tl.fromTo(loading, 0.4, {autoAlpha: 1, display: 'block'}, {autoAlpha: 0, display: 'none', ease: Expo.easeOut});
-        tl.fromTo(render, 0.4, {autoAlpha: 0, display: 'none'}, {autoAlpha: 1, display: 'block', ease: Expo.easeOut}, 0.2);
+        tl.fromTo(loading, 0.4, {autoAlpha: 1, display: 'block'}, {autoAlpha: 0, display: 'none', ease: Expo.easeInOut});
+        tl.fromTo(render, 0.4, {autoAlpha: 0, display: 'none'}, {autoAlpha: 1, display: 'block', ease: Expo.easeInOut}, 0.2);
         if(callback && typeof(callback) === 'function') {
             tl.addCallback(callback, 0.5);
         }
