@@ -1,6 +1,6 @@
 Sound and typography
 ====================
-A experiment about sound and typography for the HTML/CSS/JS class in [Gobelins, l'école de l'image]() by [Jonathan Blanchet](http://jblanche.fr).
+A experiment about sound and typography for the HTML/CSS/JS class in [Gobelins, l'école de l'image](http://www.gobelins.fr/) by [Jonathan Blanchet](http://jblanche.fr).
 
 ## Installation
 After cloning the repository,
