@@ -2,7 +2,7 @@
 
 function Audio(file) {
     this.file = file;
-    this.context = new webkitAudioContext();
+    this.context = new AudioContext() || new webkitAudioContext();
     this.source = this.context.createBufferSource();
     this.analyser = this.context.createAnalyser();
     this.analyser.fftSize = 2048;
