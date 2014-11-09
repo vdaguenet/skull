@@ -36,6 +36,8 @@ var raf;
     TweenMax.set(render, {autoAlpha: 0, display: 'none'});
     TweenMax.set(endPage, {autoAlpha: 0, display: 'none'});
 
+    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
     registerScenes();
 
     ee.addOnceListener('sound:load', function() {
