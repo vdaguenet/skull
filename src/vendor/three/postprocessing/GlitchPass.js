@@ -1,19 +1,19 @@
 /**
- 
+
  */
 
 THREE.GlitchPass = function ( dt_size ) {
 
 	if ( THREE.DigitalGlitch === undefined ) console.error( "THREE.GlitchPass relies on THREE.DigitalGlitch" );
-	
+
 	var shader = THREE.DigitalGlitch;
 	this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 
 	if(dt_size==undefined) dt_size=64;
-	
-	
+
+
 	this.uniforms[ "tDisp"].value=this.generateHeightmap(dt_size);
-	
+
 
 	this.material = new THREE.ShaderMaterial({
 		uniforms: this.uniforms,
@@ -21,8 +21,6 @@ THREE.GlitchPass = function ( dt_size ) {
 		fragmentShader: shader.fragmentShader
 	});
 
-	console.log(this.material);
-	
 	this.enabled = true;
 	this.renderToScreen = false;
 	this.needsSwap = true;
@@ -33,21 +31,21 @@ THREE.GlitchPass = function ( dt_size ) {
 
 	this.quad = new THREE.Mesh( new THREE.PlaneGeometry( 2, 2 ), null );
 	this.scene.add( this.quad );
-	
+
 	this.goWild=false;
 	this.curF=0;
 	this.generateTrigger();
-	
+
 };
 
 THREE.GlitchPass.prototype = {
 
-	render: function ( renderer, writeBuffer, readBuffer, delta ) 
+	render: function ( renderer, writeBuffer, readBuffer, delta )
 	{
 		this.uniforms[ "tDiffuse" ].value = readBuffer;
 		this.uniforms[ 'seed' ].value=Math.random();//default seeding
 		this.uniforms[ 'byp' ].value=0;
-		
+
 		if(this.curF % this.randX ==0 || this.goWild==true)
 		{
 			this.uniforms[ 'amount' ].value=Math.random()/30;
@@ -73,13 +71,13 @@ THREE.GlitchPass.prototype = {
 			this.uniforms[ 'byp' ].value=1;
 		}
 		this.curF++;
-		
+
 		this.quad.material = this.material;
-		if ( this.renderToScreen ) 
+		if ( this.renderToScreen )
 		{
 			renderer.render( this.scene, this.camera );
-		} 
-		else 
+		}
+		else
 		{
 			renderer.render( this.scene, this.camera, writeBuffer, false );
 		}
@@ -91,20 +89,17 @@ THREE.GlitchPass.prototype = {
 	generateHeightmap:function(dt_size)
 	{
 		var data_arr = new Float32Array( dt_size*dt_size * 3 );
-		console.log(dt_size);
 		var length=dt_size*dt_size;
-		
-		for ( var i = 0; i < length; i++) 
+
+		for ( var i = 0; i < length; i++)
 		{
 			var val=THREE.Math.randFloat(0,1);
 			data_arr[ i*3 + 0 ] = val;
 			data_arr[ i*3 + 1 ] = val;
 			data_arr[ i*3 + 2 ] = val;
 		}
-		
+
 		var texture = new THREE.DataTexture( data_arr, dt_size, dt_size, THREE.RGBFormat, THREE.FloatType );
-		console.log(texture);
-		console.log(dt_size);
 		texture.minFilter = THREE.NearestFilter;
 		texture.magFilter = THREE.NearestFilter;
 		texture.needsUpdate = true;

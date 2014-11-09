@@ -5,9 +5,9 @@ var EventEmitter = require('wolfy87-eventemitter'),
     utils = require('../utils/utils.js');
 
 function SkullScene() {
-    this.scene = null;
-    this.object = null;
-    this.light = null;
+    this.scene = undefined;
+    this.object = undefined;
+    this.light = undefined;
     this.EE = new EventEmitter();
 }
 
@@ -71,9 +71,7 @@ SkullScene.prototype.initLights = function() {
     this.scene.add(this.light);
 };
 
-SkullScene.prototype.animate = function() {
-    // this.object.rotation.y -= 0.001;
-};
+SkullScene.prototype.animate = function() {};
 
 SkullScene.prototype.onProgress = function ( xhr ) {
     if ( xhr.lengthComputable ) {
@@ -82,7 +80,6 @@ SkullScene.prototype.onProgress = function ( xhr ) {
     }
 };
 
-SkullScene.prototype.onError = function ( xhr ) {
-};
+SkullScene.prototype.onError = function ( xhr ) {};
 
 module.exports = SkullScene;

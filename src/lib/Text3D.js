@@ -1,3 +1,8 @@
+/**
+ * Text 3D class.
+ * Create a TextGeometry with params given
+ */
+
 'use strict';
 
 function Text3D(text, font, color, params) {

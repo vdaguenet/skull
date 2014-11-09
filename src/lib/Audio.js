@@ -7,8 +7,8 @@ function Audio(file) {
     this.analyser = this.context.createAnalyser();
     this.analyser.fftSize = 2048;
     this.gainNode = this.context.createGain();
-    this.buffer = null;
-    this.audioBuffer = null;
+    this.buffer = undefined;
+    this.audioBuffer = undefined;
     this.freqByteData = 0;
     // Connect audio processing graph
     this.source.connect(this.analyser);
@@ -18,8 +18,10 @@ function Audio(file) {
     this.initByteBuffer();
 }
 
+/**
+ * Load asynchronously a sound in the buffer
+ */
 Audio.prototype.load = function(callback) {
-    // Load asynchronously
     var request = new XMLHttpRequest();
     request.open("GET", this.file, true);
     request.responseType = "arraybuffer";
@@ -40,10 +42,17 @@ Audio.prototype.load = function(callback) {
     request.send();
 };
 
+/**
+ * Play the sound loaded
+ * @param  {Integer} delay    Waiting time before playing
+ * @param  {Integer} start    Start time on the sound
+ * @param  {Integer} duration How long the sound will be played
+ * @param  {Object} params    Some options
+ */
 Audio.prototype.play = function(delay, start, duration, params) {
     this.duration = duration = duration || this.source.duration;
-    var fadeInDuration = params.fadeInDuration || null;
-    var fadeOutDuration = params.fadeOutDuration || null;
+    var fadeInDuration = params.fadeInDuration || undefined;
+    var fadeOutDuration = params.fadeOutDuration || undefined;
 
     if (fadeInDuration) {
         this.duration += fadeInDuration;

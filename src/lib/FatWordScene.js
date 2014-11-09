@@ -6,8 +6,8 @@ var EventEmitter = require('wolfy87-eventemitter'),
     utils = require('../utils/utils.js');
 
 function FatWordScene() {
-    this.scene = null;
-    this.object = null;
+    this.scene = undefined;
+    this.object = undefined;
     this.EE = new EventEmitter();
 }
 
@@ -15,7 +15,6 @@ utils.inherit(FatWordScene, AbstractScene);
 
 FatWordScene.prototype.init = function(renderer) {
     this.renderer = renderer;
-    // this.renderer.setClearColor(0x430b3c, .8);
     this.initCamera();
     this.initScene();
 
@@ -89,6 +88,7 @@ FatWordScene.prototype.animate = function() {
     }
 
     if(this.object.position.z >= 0) {
+        // Reset animation
         this.object.position.set(-200, -40, -120);
         this.object.rotation.set(-0.3, 0, 0.2);
     }

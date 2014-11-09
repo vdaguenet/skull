@@ -6,9 +6,9 @@ var EventEmitter = require('wolfy87-eventemitter'),
     utils = require('../utils/utils.js');
 
 function RingScene() {
-    this.scene = null;
-    this.group = null;
-    this.light = null;
+    this.scene = undefined;
+    this.group = undefined;
+    this.light = undefined;
     // Center of the spiarl
     this.center = {
         x: 7,
@@ -43,7 +43,7 @@ RingScene.prototype.init = function(renderer) {
         x, z, m,
         nbRun, nbLetter = 0;
 
-    // Spiral of 10 rings
+    // Stack of rings
     for (var a = 0; a < this.nbRings; a++) {
         x = 0;
         z = this.radius;

@@ -6,9 +6,9 @@ var EventEmitter = require('wolfy87-eventemitter'),
     utils = require('../utils/utils.js');
 
 function AsteroidScene() {
-    this.scene = null;
-    this.group = null;
-    this.light = null;
+    this.scene = undefined;
+    this.group = undefined;
+    this.light = undefined;
     this.EE = new EventEmitter();
 }
 

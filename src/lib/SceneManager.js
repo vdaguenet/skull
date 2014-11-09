@@ -28,6 +28,9 @@ function SceneManager(el) {
     }
 }
 
+/**
+ * Set WebGL renderer and append it to body
+ */
 SceneManager.prototype.initRender = function() {
     this.renderer = new THREE.WebGLRenderer({
         antialias: true
@@ -37,6 +40,9 @@ SceneManager.prototype.initRender = function() {
     this.EE.emit('render:init');
 };
 
+/**
+ * Render
+ */
 SceneManager.prototype.render = function() {
     this.raf = requestAnimationFrame(this.render.bind(this));
 
@@ -56,6 +62,9 @@ SceneManager.prototype.render = function() {
     }
 };
 
+/**
+ * Init scene and save it
+ */
 SceneManager.prototype.register = function(scene) {
     scene.EE.addOnceListener('scene:init', function() {
         this.scenes.push(scene);
@@ -64,6 +73,9 @@ SceneManager.prototype.register = function(scene) {
     scene.init(this.renderer);
 };
 
+/**
+ * Adapt renderer size on window size
+ */
 SceneManager.prototype.onWindowResize = function(first_argument) {
     for (var i = 0, j = this.scenes.length; i < j; i++) {
         this.scenes[i].onWindowResize();
@@ -72,14 +84,19 @@ SceneManager.prototype.onWindowResize = function(first_argument) {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 };
 
+/**
+ * Play the scene with the id given
+ */
 SceneManager.prototype.play = function(id) {
     var j = this.scenes.length;
     if(id < 0 || id > j || id == j) return;
 
-    console.log('play scene', id);
     this.scenePlaying = id;
 };
 
+/**
+ * Stop rendering
+ */
 SceneManager.prototype.stop = function() {
     stats.domElement.style.opacity = 0;
     cancelAnimationFrame(this.raf);
