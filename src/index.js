@@ -85,9 +85,9 @@ function loadSound () {
  * Play sound, start its analyze and render the first scene
  */
 function playSound () {
-    audioAnalyzer.play(0, 41, 50, {
+    audioAnalyzer.play(0, 42, 40, {
         fadeInDuration: 3,
-        fadeOutDuration: 4
+        fadeOutDuration: 6
     });
     raf = requestAnimationFrame(analyze);
     SM.play(1);

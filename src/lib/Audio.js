@@ -50,7 +50,8 @@ Audio.prototype.load = function(callback) {
  * @param  {Object} params    Some options
  */
 Audio.prototype.play = function(delay, start, duration, params) {
-    this.duration = duration = duration || this.source.duration;
+    duration = duration || this.source.duration;
+    this.duration = duration;
     var fadeInDuration = params.fadeInDuration || undefined;
     var fadeOutDuration = params.fadeOutDuration || undefined;
 
@@ -61,7 +62,7 @@ Audio.prototype.play = function(delay, start, duration, params) {
         this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + fadeInDuration);
     }
     if (fadeOutDuration) {
-        this.duration += fadeOutDuration;
+        this.duration += (fadeOutDuration/2);
         // Fade the track out.
         this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + duration - fadeOutDuration);
         this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime + duration);
