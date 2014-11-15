@@ -10,34 +10,86 @@ var EventEmitter = require('wolfy87-eventemitter'),
     utils = require('./utils/utils.js');
 
 // DOM elements
-var render = document.getElementById('render');
+var home = document.querySelector('.home');
+var homeTitle = document.querySelector('.title');
+var homeSubtitle = document.querySelector('.subtitle');
+var startButton = document.querySelector('.start');
+var startLeft = document.querySelector('.start .part-left');
+var startRight = document.querySelector('.start .part-right');
 var loading = document.querySelector('.loading');
+var loaderBg = document.querySelector('.loader-bg');
 var loader = document.querySelector('.loader');
+
+var render = document.getElementById('render');
+
 var endPage = document.querySelector('.end');
 // Sound and scenes part
-var audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
+var audioAnalyzer;
 var SM = new SceneManager(render);
 var scenes = [
     new SkullScene(),
     new RingScene(),
     new AsteroidScene(),
-    new FatWordScene(),
+    new FatWordScene()
 ];
 
 var lastGlitch = 0;
 var lastSwitch = 0;
 var load = 0;
 var raf;
+var tlTransitionHomeIn = new TimelineMax();
+var tlButtonStart;
+
+document.addEventListener("DOMContentLoaded", function() {
+    TweenMax.set([
+            loading,
+            render,
+            endPage
+        ],
+        {autoAlpha: 0, display: 'none'}
+    );
+
+    startButton.addEventListener('click', function (event) {
+        var tl = new TimelineMax({
+            onComplete: function () {
+                start();
+            }
+        });
+        tl.fromTo(startButton, 0.6,
+            {alpha: 1, x: 0},
+            {alpha: 0, x: 200, ease: Expo.easeOut},
+            0);
+        tl.fromTo(loading, 0.6,
+            {autoAlpha: 0, display: 'none', x: -100},
+            {autoAlpha: 1, display: 'block', x: 0, ease: Expo.easeOut},
+            0.3);
+    }, false);
+
+    startButton.addEventListener('mouseover', function (event) {
+        tlButtonStart = new TimelineMax();
+        tlButtonStart.fromTo(startLeft, 0.15, {x: 0}, {x: -12, ease: Expo.easeIn}, 0);
+        tlButtonStart.fromTo(startRight, 0.15, {x: 0}, {x: 12, ease: Expo.easeIn}, 0);
+        tlButtonStart.fromTo(startLeft, 0.15, {y:0}, {y: -4, ease: Expo.easeOut}, 0.15);
+        tlButtonStart.fromTo(startRight, 0.15, {y:0}, {y: 4, ease: Expo.easeOut}, 0.15);
+
+    }, false);
+
+    startButton.addEventListener('mouseout', function (event) {
+        if(tlButtonStart) {
+            tlButtonStart.kill();
+        }
+        tlButtonStart.reverse();
+    }, false);
+
+    homeTransitionIn();
+
+    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+}, false);
 
 /**
  * Main
  */
-(function() {
-    TweenMax.set(render, {autoAlpha: 0, display: 'none'});
-    TweenMax.set(endPage, {autoAlpha: 0, display: 'none'});
-
-    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
+function start () {
     registerScenes();
 
     ee.addOnceListener('sound:load', function() {
@@ -47,7 +99,24 @@ var raf;
             playSound();
         });
     });
-})();
+}
+
+function homeTransitionIn () {
+    var letters = document.querySelectorAll('.subtitle-letter');
+
+    tlTransitionHomeIn.fromTo(homeTitle, 0.9,
+        {alpha: 0, y: -500},
+        {alpha: 1, y: 0, ease: Expo.easeOut, delay: 0.1},
+        0);
+    tlTransitionHomeIn.staggerFromTo(letters, 0.7,
+        {alpha: 0, y: 100},
+        {alpha: 1, y: 0, ease: Expo.easeOut},
+        0.08);
+    tlTransitionHomeIn.fromTo(startButton, 0.6,
+        {alpha: 0, y: 100},
+        {alpha: 1, y: 0, ease: Expo.easeOut},
+        3.4);
+}
 
 /**
  * Register each scene on the Scene Manager
@@ -57,6 +126,7 @@ function registerScenes() {
     var scenesRegistered  = 0;
 
     SM.EE.addListener('scene:register', function() {
+
         scenesRegistered++;
         console.log('%cRegister scene '+ scenesRegistered, 'color: #0000ff');
         load = scenesRegistered/j * 90;
@@ -64,18 +134,20 @@ function registerScenes() {
         if(scenesRegistered == j) {
             console.log('%cAll scenes registered!', 'color: #0000ff');
             loadSound();
+            return;
         }
+
+        SM.register(scenes[scenesRegistered]);
     });
 
-    for (var i = 0; i < j; i++) {
-        SM.register(scenes[i]);
-    }
+    SM.register(scenes[scenesRegistered]);
 }
 
 /**
  * Load the sound in the buffer
  */
 function loadSound () {
+    audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
     audioAnalyzer.load(function() {
         ee.emitEvent('sound:load');
     });
@@ -92,6 +164,7 @@ function playSound () {
     raf = requestAnimationFrame(analyze);
     SM.play(1);
     SM.render();
+    TweenMax.set(render, {autoAlpha: 1, display: 'block'});
 }
 
 /**
@@ -158,16 +231,30 @@ function playRandomScene() {
 /**
  * Update loading bar
  */
-function updateLoader (percent, callback) {
-    var loaderBg = document.querySelector('.loader-bg');
+function updateLoader (percent, onLoad) {
     TweenMax.to(loader, 0.3, {x: percent/100*loaderBg.offsetWidth});
 
     if(percent == 100) {
-        var tl = new TimelineMax();
-        tl.fromTo(loading, 0.4, {autoAlpha: 1, display: 'block'}, {autoAlpha: 0, display: 'none', ease: Expo.easeInOut});
-        tl.fromTo(render, 0.4, {autoAlpha: 0, display: 'none'}, {autoAlpha: 1, display: 'block', ease: Expo.easeInOut}, 0.2);
-        if(callback && typeof(callback) === 'function') {
-            tl.addCallback(callback, 0.5);
-        }
+        var tl = new TimelineMax({
+            onComplete: function () {
+                if(onLoad && typeof(onLoad) === 'function') {
+                    onLoad();
+                }
+            }
+        });
+        tl.staggerFromTo(
+            [
+                loading,
+                homeSubtitle,
+                homeTitle
+            ],
+            0.9,
+            {alpha: 1, y: 0},
+            {alpha: 0, y: 100, delay: 0.1, ease: Expo.easeOut},
+            0.08);
+        tl.fromTo(home, 0.2,
+            {autoAlpha: 1, display: 'block'},
+            {autoAlpha: 0, display: 'none', ease: Expo.easeOut},
+            0.8);
     }
 }
