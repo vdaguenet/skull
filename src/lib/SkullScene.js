@@ -15,11 +15,12 @@ utils.inherit(SkullScene, AbstractScene);
 
 SkullScene.prototype.init = function(renderer) {
     this.renderer = renderer;
-    this.initCamera();
-    this.initScene();
 
     var loader = new THREE.OBJLoader( new THREE.LoadingManager() );
     loader.load( '../assets/obj/evil-skull.obj', function ( object ) {
+        this.initCamera();
+        this.initScene();
+
         this.object = object;
         this.object.position.y = 1.25;
         this.object.position.z = 88;
@@ -27,11 +28,11 @@ SkullScene.prototype.init = function(renderer) {
         this.object.scale.x = this.object.scale.y = this.object.scale.z = 6;
         this.scene.add( object );
 
+        this.initLights();
+        this.postProcessing();
+        this.EE.emit('scene:init');
     }.bind(this), this.onProgress, this.onError );
 
-    this.initLights();
-    this.postProcessing();
-    this.EE.emit('scene:init');
 };
 
 SkullScene.prototype.postProcessing = function() {

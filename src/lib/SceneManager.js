@@ -23,6 +23,7 @@ function SceneManager(el) {
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.left = '0px';
         stats.domElement.style.top = '0px';
+        stats.domElement.style.opacity = 0;
 
         document.body.appendChild(stats.domElement);
     }
@@ -58,7 +59,24 @@ SceneManager.prototype.render = function() {
     }
 
     if (true === debug) {
+        if (stats.domElement.style.opacity < 1) {
+            stats.domElement.style.opacity = 1;
+        }
         stats.update();
+    }
+};
+
+/**
+ * Prerender a scene to increase performances
+ */
+SceneManager.prototype.prerender = function(s) {
+    if(s.composer) {
+        s.composer.render();
+    } else {
+        this.renderer.render(
+            s.scene,
+            s.camera
+        );
     }
 };
 
@@ -67,6 +85,10 @@ SceneManager.prototype.render = function() {
  */
 SceneManager.prototype.register = function(scene) {
     scene.EE.addOnceListener('scene:init', function() {
+        for(var i = 0; i < 10; i++) {
+            this.prerender(scene);
+        }
+
         this.scenes.push(scene);
         this.EE.emitEvent('scene:register');
     }.bind(this));
