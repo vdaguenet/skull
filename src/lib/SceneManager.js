@@ -4,7 +4,7 @@ var EventEmitter = require('wolfy87-eventemitter'),
     utils = require('../utils/utils.js');
 
 var stats,
-    debug = true;
+    debug = false;
 
 function SceneManager(el) {
     this.el = el;
@@ -120,7 +120,9 @@ SceneManager.prototype.play = function(id) {
  * Stop rendering
  */
 SceneManager.prototype.stop = function() {
-    stats.domElement.style.opacity = 0;
+    if (true === debug) {
+        stats.domElement.style.opacity = 0;
+    }
     cancelAnimationFrame(this.raf);
 };
 

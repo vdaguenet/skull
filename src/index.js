@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var tl = new TimelineMax({
             onComplete: function () {
                 start();
+                // onEnd();
             }
         });
         tl.fromTo(startButton, 0.6,
@@ -147,7 +148,7 @@ function registerScenes() {
  * Load the sound in the buffer
  */
 function loadSound () {
-    audioAnalyzer = new Audio('../assets/sound/Biome - Shaman.mp3');
+    audioAnalyzer = new Audio('./assets/sound/Biome - Shaman.mp3');
     audioAnalyzer.load(function() {
         ee.emitEvent('sound:load');
     });
@@ -212,12 +213,19 @@ function onEnd() {
     cancelAnimationFrame(raf);
     SM.stop();
 
-    var h1 = document.querySelector('.end h1');
-    var sub = document.querySelector('.sub-title');
+    var img = document.querySelector('.end img');
+    var texts = document.querySelectorAll('.end p');
+
     var tl = new TimelineMax();
-    tl.fromTo(render, 0.6, {autoAlpha: 1, display: 'block'}, {autoAlpha: 0, display: 'none', ease: Expo.easeInOut}, 0);
-    tl.fromTo(endPage, 0.6, {autoAlpha: 0, display: 'none'}, {autoAlpha: 1, display: 'block', ease: Expo.easeInOut}, 0);
-    tl.staggerFromTo([h1, sub], 0.7, {alpha: 0, y: 100}, {alpha: 1, y: 0, ease: Expo.easeOut}, 0.08);
+    tl.set(render, {autoAlpha: 0, display: 'none'}, 0);
+    tl.set(endPage, {autoAlpha: 1, display: 'block'}, 0.1);
+    tl.fromTo(img, 0.8,
+        {alpha: 0, y: -300},
+        {alpha: 1, y: 0, ease: Expo.easeOut, delay: 0.1});
+    tl.staggerFromTo(texts, 0.9,
+        {alpha: 0, x: -200},
+        {alpha: 1, x: 0, ease: Expo.easeOut},
+        0.08);
 }
 
 /**

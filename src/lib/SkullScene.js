@@ -17,7 +17,7 @@ SkullScene.prototype.init = function(renderer) {
     this.renderer = renderer;
 
     var loader = new THREE.OBJLoader( new THREE.LoadingManager() );
-    loader.load( '../assets/obj/evil-skull.obj', function ( object ) {
+    loader.load( './assets/obj/evil-skull.obj', function ( object ) {
         this.initCamera();
         this.initScene();
 

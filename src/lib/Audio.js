@@ -3,6 +3,7 @@
 function Audio(file) {
     this.file = file;
     this.context = new AudioContext() || new webkitAudioContext();
+    this.startDate = undefined;
     this.source = this.context.createBufferSource();
     this.analyser = this.context.createAnalyser();
     this.analyser.fftSize = 2048;
@@ -56,19 +57,18 @@ Audio.prototype.play = function(delay, start, duration, params) {
     var fadeOutDuration = params.fadeOutDuration || undefined;
 
     if (fadeInDuration) {
-        this.duration += fadeInDuration;
         // Fade the track in.
         this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime);
         this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + fadeInDuration);
     }
     if (fadeOutDuration) {
-        this.duration += (fadeOutDuration/2);
         // Fade the track out.
         this.gainNode.gain.linearRampToValueAtTime(1, this.context.currentTime + duration - fadeOutDuration);
         this.gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime + duration);
     }
 
     this.source.start(delay, start, duration);
+    this.startDate = Date.now();
 };
 
 Audio.prototype.initByteBuffer = function() {
@@ -80,7 +80,8 @@ Audio.prototype.initByteBuffer = function() {
 Audio.prototype.getFrequencyAnalysis = function() {
     this.analyser.smoothingTimeConstant = 0.75;
     this.analyser.getByteFrequencyData(this.freqByteData);
-    if(this.context.currentTime >= this.duration) {
+
+    if((Date.now() - this.startDate) >= this.duration*1000) {
         this.source.stop();
         return false;
     }
