@@ -11,7 +11,7 @@ function Audio(file) {
     this.buffer = undefined;
     this.audioBuffer = undefined;
     this.freqByteData = 0;
-    // Connect audio processing graph
+    // Connect everything
     this.source.connect(this.analyser);
     this.analyser.connect(this.gainNode);
     this.gainNode.connect(this.context.destination);

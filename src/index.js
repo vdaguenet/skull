@@ -38,6 +38,7 @@ var load = 0;
 var raf;
 var tlTransitionHomeIn = new TimelineMax();
 var tlButtonStart;
+var rendering = false;
 
 document.addEventListener("DOMContentLoaded", function() {
     TweenMax.set([
@@ -155,14 +156,11 @@ function loadSound () {
  * Play sound, start its analyze and render the first scene
  */
 function startVisualization () {
-    audioAnalyzer.play(0, 42, 40, {
+    audioAnalyzer.play(0, 48, 34, {
         fadeInDuration: 3,
         fadeOutDuration: 6
     });
     raf = requestAnimationFrame(analyze);
-    SM.play(1);
-    SM.render();
-    TweenMax.set(render, {autoAlpha: 1, display: 'block'});
 }
 
 /**
@@ -199,6 +197,11 @@ function analyze() {
         }
 
         playRandomScene();
+        if (false === rendering) {
+            SM.render();
+            TweenMax.set(render, {autoAlpha: 1, display: 'block'});
+            rendering = true;
+        }
         lastSwitch = Date.now();
     }
 }
