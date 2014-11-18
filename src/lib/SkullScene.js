@@ -42,13 +42,6 @@ SkullScene.prototype.postProcessing = function() {
     var sepiaPass = new THREE.ShaderPass(THREE.SepiaShader);
     this.composer.addPass(sepiaPass);
 
-    var rgbPass = new THREE.ShaderPass(THREE.RGBShiftShader);
-    rgbPass.uniforms['amount'].value = 0.003;
-    this.composer.addPass(rgbPass);
-
-    var filmPass = new THREE.FilmPass(0.5, 0.35, 648, false);
-    this.composer.addPass(filmPass);
-
     var glitchPass = new THREE.GlitchPass();
     glitchPass.goWild = true;
     glitchPass.renderToScreen = true;
@@ -81,6 +74,8 @@ SkullScene.prototype.onProgress = function ( xhr ) {
     }
 };
 
-SkullScene.prototype.onError = function ( xhr ) {};
+SkullScene.prototype.onError = function ( xhr ) {
+    console.error('Can\'t load file.');
+};
 
 module.exports = SkullScene;
