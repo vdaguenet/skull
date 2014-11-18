@@ -85,7 +85,7 @@ SceneManager.prototype.prerender = function(s) {
  */
 SceneManager.prototype.register = function(scene) {
     scene.EE.addOnceListener('scene:init', function() {
-        for(var i = 0; i < 10; i++) {
+        for(var i = 0; i < 20; i++) {
             this.prerender(scene);
         }
 
