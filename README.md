@@ -27,8 +27,11 @@ For the best experience, use the latest version of Google Chrome. Otherwise, you
 - Do a more precise analyze of the sound.
 
 ## Self-estimated mark
-- conception: 2/4
+- conception: 3/4
 - subject respect: 3/4
-- development - delivery part: 2/4
+- development - delivery part: 3/4
 - development - code quality: 3/4
--
+- respect of delivery: 2/2
+- final talk: 1/2
+
+Total: 15/20
