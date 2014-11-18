@@ -11,6 +11,7 @@ then, build the project
 ```
 gulp
 ```
+The project is now running at [http://localhost:3333](http://localhost:3333)!
 
 In a production environment,
 ```
@@ -24,3 +25,10 @@ For the best experience, use the latest version of Google Chrome. Otherwise, you
 ## Points to improve
 - Improve performances.
 - Do a more precise analyze of the sound.
+
+## Self-estimated mark
+- conception: 2/4
+- subject respect: 3/4
+- development - delivery part: 2/4
+- development - code quality: 3/4
+-
