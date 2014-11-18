@@ -19,12 +19,11 @@ var startRight = document.querySelector('.start .part-right');
 var loading = document.querySelector('.loading');
 var loaderBg = document.querySelector('.loader-bg');
 var loader = document.querySelector('.loader');
-
 var render = document.getElementById('render');
-
 var endPage = document.querySelector('.end');
+
 // Sound and scenes part
-var audioAnalyzer;
+var audioAnalyzer = new Audio('./assets/sound/Biome - Shaman.mp3');
 var SM = new SceneManager(render);
 var scenes = [
     new SkullScene(),
@@ -52,8 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
     startButton.addEventListener('click', function (event) {
         var tl = new TimelineMax({
             onComplete: function () {
-                start();
-                // onEnd();
+                loadAssets();
             }
         });
         tl.fromTo(startButton, 0.6,
@@ -87,21 +85,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 }, false);
 
-/**
- * Main
- */
-function start () {
-    registerScenes();
-
-    ee.addOnceListener('sound:load', function() {
-        load += 10;
-        updateLoader(load, function() {
-            console.log('%cSound loaded!', 'color: #0000ff');
-            playSound();
-        });
-    });
-}
-
 function homeTransitionIn () {
     var letters = document.querySelectorAll('.subtitle-letter');
 
@@ -120,6 +103,20 @@ function homeTransitionIn () {
 }
 
 /**
+ * Main
+ */
+function loadAssets () {
+    ee.addListener('loader:update', function(value) {
+        updateLoader(value, function() {
+            startVisualization();
+        });
+    });
+
+    loadSound();
+    registerScenes();
+}
+
+/**
  * Register each scene on the Scene Manager
  */
 function registerScenes() {
@@ -130,11 +127,10 @@ function registerScenes() {
 
         scenesRegistered++;
         console.log('%cRegister scene '+ scenesRegistered, 'color: #0000ff');
-        load = scenesRegistered/j * 90;
-        updateLoader(load);
+        load += 80 / scenes.length;
+        ee.emitEvent('loader:update', [load]);
         if(scenesRegistered == j) {
             console.log('%cAll scenes registered!', 'color: #0000ff');
-            loadSound();
             return;
         }
 
@@ -148,16 +144,17 @@ function registerScenes() {
  * Load the sound in the buffer
  */
 function loadSound () {
-    audioAnalyzer = new Audio('./assets/sound/Biome - Shaman.mp3');
     audioAnalyzer.load(function() {
-        ee.emitEvent('sound:load');
+        console.log('%cSound loaded!', 'color: #0000ff');
+        load += 20;
+        ee.emitEvent('loader:update', [load]);
     });
 }
 
 /**
  * Play sound, start its analyze and render the first scene
  */
-function playSound () {
+function startVisualization () {
     audioAnalyzer.play(0, 42, 40, {
         fadeInDuration: 3,
         fadeOutDuration: 6
@@ -217,8 +214,8 @@ function onEnd() {
     var texts = document.querySelectorAll('.end p');
 
     var tl = new TimelineMax();
-    tl.set(render, {autoAlpha: 0, display: 'none'}, 0);
-    tl.set(endPage, {autoAlpha: 1, display: 'block'}, 0.1);
+    tl.to(render, 0.3, {autoAlpha: 0, display: 'none', ease: Expo.easeOut}, 0);
+    tl.set(endPage, {autoAlpha: 1, display: 'block'});
     tl.fromTo(img, 0.8,
         {alpha: 0, y: -300},
         {alpha: 1, y: 0, ease: Expo.easeOut, delay: 0.1});

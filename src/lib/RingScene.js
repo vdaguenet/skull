@@ -8,12 +8,15 @@ var EventEmitter = require('wolfy87-eventemitter'),
 function RingScene() {
     this.scene = undefined;
     this.group = undefined;
+    this.rings = [];
+    this.atTop = false;
+    this.bluriness = 4;
     this.light = undefined;
-    // Center of the spiarl
+    // Center of the column
     this.center = {
-        x: 7,
+        x: 0,
         y: -50,
-        z: 4,
+        z: 0
     };
     this.radius = 60;
     this.nbRings = 20;
@@ -27,10 +30,6 @@ RingScene.prototype.init = function(renderer) {
     this.initCamera();
     this.initScene();
 
-    this.group = new THREE.Object3D();
-    this.group.position.set(this.center.x, this.center.y, this.center.z);
-    this.scene.add(this.group);
-
     var ratio = 2;
     var space = 10;
     var positions = [];
@@ -43,8 +42,14 @@ RingScene.prototype.init = function(renderer) {
         x, z, m,
         nbRun, nbLetter = 0;
 
+
     // Stack of rings
     for (var a = 0; a < this.nbRings; a++) {
+        this.group = new THREE.Object3D();
+        this.group.position.set(this.center.x, this.center.y, this.center.z);
+        this.group.rotation.y = -Math.PI/6;
+        this.scene.add(this.group);
+
         x = 0;
         z = this.radius;
         m = 5 - 4 * this.radius;
@@ -88,12 +93,13 @@ RingScene.prototype.init = function(renderer) {
             }
             x++;
             m = m + 8 * x + 4;
+
+            this.rings.push(this.group);
         }
     }
 
     this.initLights();
     this.postProcessing();
-
     this.EE.emit('scene:init');
 };
 
@@ -103,11 +109,8 @@ RingScene.prototype.postProcessing = function() {
 
     var hblur = new THREE.ShaderPass( THREE.HorizontalTiltShiftShader );
     var vblur = new THREE.ShaderPass( THREE.VerticalTiltShiftShader );
-
-    var bluriness = 4;
-
-    hblur.uniforms['h'].value = bluriness / window.innerWidth;
-    vblur.uniforms['v'].value = bluriness / window.innerHeight;
+    hblur.uniforms['h'].value = this.bluriness / window.innerWidth;
+    vblur.uniforms['v'].value = this.bluriness / window.innerHeight;
     this.composer.addPass(hblur);
     this.composer.addPass(vblur);
 
@@ -124,7 +127,7 @@ RingScene.prototype.initCamera = function() {
 
 RingScene.prototype.initScene = function() {
     this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.Fog(0x000000, 1, 1000);
+    this.scene.fog = new THREE.Fog(0x000000, 0.5, -50);
 };
 
 RingScene.prototype.initLights = function() {
@@ -135,7 +138,34 @@ RingScene.prototype.initLights = function() {
 };
 
 RingScene.prototype.animate = function() {
-    this.group.rotation.y -= 0.001;
+    this.rings.forEach(function (ring, i) {
+
+        if(this.atTop === true) {
+            ring.position.y += (0 - ring.position.y) * 0.0002;
+            ring.rotation.x += ((-Math.PI/2) - ring.rotation.x) * 0.0001;
+
+            this.bluriness += (6 - this.bluriness) * 0.0001;
+            this.composer.passes[1].uniforms['h'].value = this.bluriness / window.innerWidth;
+            this.composer.passes[2].uniforms['v'].value = this.bluriness / window.innerHeight;
+
+            if (ring.position.y > -5) {
+
+                if(i%2 === 0) {
+                    ring.rotation.y -= 0.001;
+                } else {
+                    ring.rotation.y += 0.001;
+                }
+                ring.position.z += 0.006;
+            }
+        } else {
+            ring.position.y -= 0.01;
+        }
+
+        if(ring.position.y < -150) {
+            this.atTop = true;
+        }
+
+    }.bind(this));
 };
 
 module.exports = RingScene;

@@ -4,7 +4,7 @@ var EventEmitter = require('wolfy87-eventemitter'),
     utils = require('../utils/utils.js');
 
 var stats,
-    debug = false;
+    debug = true;
 
 function SceneManager(el) {
     this.el = el;
