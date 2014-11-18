@@ -79,15 +79,11 @@ FatWordScene.prototype.initLights = function() {
 };
 
 FatWordScene.prototype.animate = function() {
-    this.object.position.z += 0.1;
+    this.object.position.z += (0 - this.object.position.z) * 0.007;
 
-    this.object.rotation.x += 0.00025;
+    this.object.rotation.x += (0 - this.object.rotation.x) * 0.006;
 
-    if(this.object.rotation.x >= 0) {
-        this.object.rotation.x = 0;
-    }
-
-    if(this.object.position.z >= 0) {
+    if(this.object.position.z >= -15) {
         // Reset animation
         this.object.position.set(-200, -40, -120);
         this.object.rotation.set(-0.3, 0, 0.2);
