@@ -156,7 +156,7 @@ function loadSound () {
  * Play sound, start its analyze and render the first scene
  */
 function startVisualization () {
-    audioAnalyzer.play(0, 48, 34, {
+    audioAnalyzer.play(0, 49, 33, {
         fadeInDuration: 3,
         fadeOutDuration: 6
     });
